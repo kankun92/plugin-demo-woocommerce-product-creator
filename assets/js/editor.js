@@ -5,27 +5,48 @@
     function openCreateProductPopup() {
         // Create popup HTML if not exists
         if ($('#ewcpc-popup').length === 0) {
+            var strings = typeof ewcpcStrings !== 'undefined' ? ewcpcStrings : {
+                popupTitle: 'Create New Product',
+                closeLabel: 'Close',
+                productNameLabel: 'Product name',
+                productPriceLabel: 'Product price',
+                required: '*',
+                productNamePlaceholder: 'Enter product name',
+                productPricePlaceholder: '0.00',
+                cancel: 'Cancel',
+                save: 'Save',
+                creating: 'Creating...',
+                errorProductName: 'Please enter product name.',
+                errorProductPrice: 'Please enter a valid product price.',
+                errorConnection: 'An error occurred while connecting to the server.',
+                errorGeneral: 'An error occurred.',
+                successCreated: 'Product has been created and selected automatically!',
+                loading: 'Loading...',
+                product: 'Product',
+                selectProduct: 'Please select a product to display.'
+            };
+            
             var popupHTML = `
                 <div id="ewcpc-popup" class="ewcpc-popup-overlay" style="display: none;">
                     <div class="ewcpc-popup-content">
                         <div class="ewcpc-popup-header">
-                            <h3>Tạo Sản Phẩm Mới</h3>
-                            <button type="button" class="ewcpc-popup-close" aria-label="Đóng">&times;</button>
+                            <h3>${strings.popupTitle}</h3>
+                            <button type="button" class="ewcpc-popup-close" aria-label="${strings.closeLabel}">&times;</button>
                         </div>
                         <div class="ewcpc-popup-body">
                             <form id="ewcpc-product-form">
                                 <div class="ewcpc-form-group">
-                                    <label for="ewcpc-product-name">Tên sản phẩm <span class="required">*</span></label>
-                                    <input type="text" id="ewcpc-product-name" name="product_name" class="ewcpc-form-control" required placeholder="Nhập tên sản phẩm">
+                                    <label for="ewcpc-product-name">${strings.productNameLabel} <span class="required">${strings.required}</span></label>
+                                    <input type="text" id="ewcpc-product-name" name="product_name" class="ewcpc-form-control" required placeholder="${strings.productNamePlaceholder}">
                                 </div>
                                 <div class="ewcpc-form-group">
-                                    <label for="ewcpc-product-price">Giá sản phẩm <span class="required">*</span></label>
-                                    <input type="number" id="ewcpc-product-price" name="product_price" class="ewcpc-form-control" step="0.01" min="0" required placeholder="0.00">
+                                    <label for="ewcpc-product-price">${strings.productPriceLabel} <span class="required">${strings.required}</span></label>
+                                    <input type="number" id="ewcpc-product-price" name="product_price" class="ewcpc-form-control" step="0.01" min="0" required placeholder="${strings.productPricePlaceholder}">
                                 </div>
                                 <div class="ewcpc-form-message" id="ewcpc-form-message"></div>
                                 <div class="ewcpc-form-actions">
-                                    <button type="button" class="ewcpc-btn ewcpc-btn-cancel">Hủy</button>
-                                    <button type="submit" class="ewcpc-btn ewcpc-btn-submit">Lưu</button>
+                                    <button type="button" class="ewcpc-btn ewcpc-btn-cancel">${strings.cancel}</button>
+                                    <button type="submit" class="ewcpc-btn ewcpc-btn-submit">${strings.save}</button>
                                 </div>
                             </form>
                         </div>
@@ -78,19 +99,31 @@
             var productName = $('#ewcpc-product-name').val().trim();
             var productPrice = $('#ewcpc-product-price').val();
 
+            var strings = typeof ewcpcStrings !== 'undefined' ? ewcpcStrings : {
+                errorProductName: 'Please enter product name.',
+                errorProductPrice: 'Please enter a valid product price.',
+                creating: 'Creating...',
+                save: 'Save',
+                errorConnection: 'An error occurred while connecting to the server.',
+                errorGeneral: 'An error occurred.',
+                successCreated: 'Product has been created and selected automatically!',
+                loading: 'Loading...',
+                product: 'Product'
+            };
+
             // Validation
             if (!productName) {
-                $message.removeClass('ewcpc-success').addClass('ewcpc-error').text('Vui lòng nhập tên sản phẩm.');
+                $message.removeClass('ewcpc-success').addClass('ewcpc-error').text(strings.errorProductName);
                 return;
             }
 
             if (!productPrice || parseFloat(productPrice) <= 0) {
-                $message.removeClass('ewcpc-success').addClass('ewcpc-error').text('Vui lòng nhập giá sản phẩm hợp lệ.');
+                $message.removeClass('ewcpc-success').addClass('ewcpc-error').text(strings.errorProductPrice);
                 return;
             }
 
             // Disable submit button
-            $submitBtn.prop('disabled', true).text('Đang tạo...');
+            $submitBtn.prop('disabled', true).text(strings.creating);
             $message.removeClass('ewcpc-success ewcpc-error').text('');
 
             // AJAX request
@@ -176,7 +209,8 @@
                                             $allWidgets.each(function() {
                                                 var $widget = jQuery(this);
                                                 var $productDisplay = $widget.find('.ewcpc-product-display');
-                                                if ($productDisplay.length && $productDisplay.find('.ewcpc-product-price').text().indexOf('Đang tải') >= 0) {
+                                                var loadingText = (typeof ewcpcStrings !== 'undefined' && ewcpcStrings.loading) ? ewcpcStrings.loading : 'Loading...';
+                                                if ($productDisplay.length && ($productDisplay.find('.ewcpc-product-price').text().indexOf(loadingText) >= 0 || $productDisplay.find('.ewcpc-product-price').text().indexOf('Đang tải') >= 0)) {
                                                     $productDisplay.html(
                                                         '<h3 class="ewcpc-product-name">' + newProductName + '</h3>' +
                                                         '<div class="ewcpc-product-price">' + priceHtml + '</div>'
@@ -193,8 +227,11 @@
                                     }, 50);
                                     
                                     if (elementor.notifications) {
+                                        var strings = typeof ewcpcStrings !== 'undefined' ? ewcpcStrings : {
+                                            successCreated: 'Product has been created and selected automatically!'
+                                        };
                                         elementor.notifications.showToast({
-                                            message: 'Sản phẩm đã được tạo và chọn tự động!',
+                                            message: strings.successCreated,
                                             type: 'success'
                                         });
                                     }
@@ -233,13 +270,21 @@
                             }
                         }
                     } else {
-                        $message.removeClass('ewcpc-success').addClass('ewcpc-error').text(response.data.message || 'Có lỗi xảy ra.');
-                        $submitBtn.prop('disabled', false).text('Lưu');
+                        var strings = typeof ewcpcStrings !== 'undefined' ? ewcpcStrings : {
+                            errorGeneral: 'An error occurred.',
+                            save: 'Save'
+                        };
+                        $message.removeClass('ewcpc-success').addClass('ewcpc-error').text(response.data.message || strings.errorGeneral);
+                        $submitBtn.prop('disabled', false).text(strings.save);
                     }
                 },
                 error: function() {
-                    $message.removeClass('ewcpc-success').addClass('ewcpc-error').text('Có lỗi xảy ra khi kết nối đến server.');
-                    $submitBtn.prop('disabled', false).text('Lưu');
+                    var strings = typeof ewcpcStrings !== 'undefined' ? ewcpcStrings : {
+                        errorConnection: 'An error occurred while connecting to the server.',
+                        save: 'Save'
+                    };
+                    $message.removeClass('ewcpc-success').addClass('ewcpc-error').text(strings.errorConnection);
+                    $submitBtn.prop('disabled', false).text(strings.save);
                 }
             });
         });

@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Elementor WooCommerce Product Creator
- * Description: Plugin tạo widget Elementor cho phép tạo sản phẩm WooCommerce trực tiếp từ editor với popup nhập tên và giá sản phẩm.
+ * Description: Elementor widget plugin that allows you to create WooCommerce products directly from the editor with a popup to enter product name and price.
  * Version: 1.0.0
  * Author: Nguyễn Đình Đường 
  */
@@ -56,7 +56,11 @@ final class Elementor_WC_Product_Creator {
 	 * Load Textdomain
 	 */
 	public function i18n() {
-		load_plugin_textdomain( 'elementor-wc-product-creator' );
+		load_plugin_textdomain( 
+			'elementor-wc-product-creator',
+			false,
+			dirname( plugin_basename( __FILE__ ) ) . '/languages'
+		);
 	}
 
 	/**
@@ -199,6 +203,27 @@ final class Elementor_WC_Product_Creator {
 			'ajaxurl' => admin_url( 'admin-ajax.php' ),
 			'nonce'   => wp_create_nonce( 'ewcpc_nonce' ),
 		] );
+
+		wp_localize_script( 'ewcpc-editor', 'ewcpcStrings', [
+			'popupTitle' => __( 'Create New Product', 'elementor-wc-product-creator' ),
+			'closeLabel' => __( 'Close', 'elementor-wc-product-creator' ),
+			'productNameLabel' => __( 'Product name', 'elementor-wc-product-creator' ),
+			'productPriceLabel' => __( 'Product price', 'elementor-wc-product-creator' ),
+			'required' => __( '*', 'elementor-wc-product-creator' ),
+			'productNamePlaceholder' => __( 'Enter product name', 'elementor-wc-product-creator' ),
+			'productPricePlaceholder' => __( '0.00', 'elementor-wc-product-creator' ),
+			'cancel' => __( 'Cancel', 'elementor-wc-product-creator' ),
+			'save' => __( 'Save', 'elementor-wc-product-creator' ),
+			'creating' => __( 'Creating...', 'elementor-wc-product-creator' ),
+			'errorProductName' => __( 'Please enter product name.', 'elementor-wc-product-creator' ),
+			'errorProductPrice' => __( 'Please enter a valid product price.', 'elementor-wc-product-creator' ),
+			'errorConnection' => __( 'An error occurred while connecting to the server.', 'elementor-wc-product-creator' ),
+			'errorGeneral' => __( 'An error occurred.', 'elementor-wc-product-creator' ),
+			'successCreated' => __( 'Product has been created and selected automatically!', 'elementor-wc-product-creator' ),
+			'loading' => __( 'Loading...', 'elementor-wc-product-creator' ),
+			'product' => __( 'Product', 'elementor-wc-product-creator' ),
+			'selectProduct' => __( 'Please select a product to display.', 'elementor-wc-product-creator' ),
+		] );
 	}
 
 	/**
@@ -242,24 +267,24 @@ final class Elementor_WC_Product_Creator {
 		check_ajax_referer( 'ewcpc_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_products' ) ) {
-			wp_send_json_error( [ 'message' => 'Bạn không có quyền tạo sản phẩm.' ] );
+			wp_send_json_error( [ 'message' => __( 'You do not have permission to create products.', 'elementor-wc-product-creator' ) ] );
 		}
 
 		$product_name = isset( $_POST['product_name'] ) ? sanitize_text_field( $_POST['product_name'] ) : '';
 		$product_price = isset( $_POST['product_price'] ) ? floatval( $_POST['product_price'] ) : 0;
 
 		if ( empty( $product_name ) ) {
-			wp_send_json_error( [ 'message' => 'Vui lòng nhập tên sản phẩm.' ] );
+			wp_send_json_error( [ 'message' => __( 'Please enter product name.', 'elementor-wc-product-creator' ) ] );
 		}
 
 		if ( $product_price <= 0 ) {
-			wp_send_json_error( [ 'message' => 'Vui lòng nhập giá sản phẩm hợp lệ.' ] );
+			wp_send_json_error( [ 'message' => __( 'Please enter a valid product price.', 'elementor-wc-product-creator' ) ] );
 		}
 
 		// Use WooCommerce REST API Controller directly
 		$user_id = get_current_user_id();
 		if ( ! $user_id ) {
-			wp_send_json_error( [ 'message' => 'Bạn cần đăng nhập để tạo sản phẩm.' ] );
+			wp_send_json_error( [ 'message' => __( 'You need to be logged in to create products.', 'elementor-wc-product-creator' ) ] );
 		}
 
 		// Ensure user is set
@@ -267,7 +292,7 @@ final class Elementor_WC_Product_Creator {
 
 		// Load WooCommerce REST API controller
 		if ( ! class_exists( 'WC_REST_Products_Controller' ) ) {
-			wp_send_json_error( [ 'message' => 'WooCommerce REST API không khả dụng.' ] );
+			wp_send_json_error( [ 'message' => __( 'WooCommerce REST API is not available.', 'elementor-wc-product-creator' ) ] );
 		}
 
 		// Prepare product data according to WooCommerce REST API format
@@ -289,7 +314,7 @@ final class Elementor_WC_Product_Creator {
 		$permission_check = $controller->create_item_permissions_check( $request );
 		if ( is_wp_error( $permission_check ) ) {
 			wp_send_json_error( [ 
-				'message' => $permission_check->get_error_message() ?: 'Bạn không có quyền tạo sản phẩm.' 
+				'message' => $permission_check->get_error_message() ?: __( 'You do not have permission to create products.', 'elementor-wc-product-creator' ) 
 			] );
 		}
 
@@ -300,7 +325,7 @@ final class Elementor_WC_Product_Creator {
 		if ( is_wp_error( $response ) ) {
 			$error_message = $response->get_error_message();
 			wp_send_json_error( [ 
-				'message' => $error_message ?: 'Có lỗi xảy ra khi tạo sản phẩm qua REST API.' 
+				'message' => $error_message ?: __( 'An error occurred while creating the product via REST API.', 'elementor-wc-product-creator' ) 
 			] );
 		}
 
@@ -313,7 +338,7 @@ final class Elementor_WC_Product_Creator {
 			$product_id = absint( $response_data['id'] );
 			
 			wp_send_json_success( [
-				'message' => 'Sản phẩm đã được tạo thành công!',
+				'message' => __( 'Product created successfully!', 'elementor-wc-product-creator' ),
 				'product_id' => $product_id,
 				'product_name' => $product_name,
 				'product_price' => $product_price,
@@ -321,7 +346,7 @@ final class Elementor_WC_Product_Creator {
 			] );
 		} else {
 			// Extract error message from response
-			$error_message = 'Có lỗi xảy ra khi tạo sản phẩm.';
+			$error_message = __( 'An error occurred while creating the product.', 'elementor-wc-product-creator' );
 			
 			if ( isset( $response_data['message'] ) ) {
 				$error_message = $response_data['message'];
@@ -427,7 +452,7 @@ final class Elementor_WC_Product_Creator {
 	 */
 	public function admin_notice_missing_main_plugin() {
 		$message = sprintf(
-			esc_html__( '"%1$s" yêu cầu "%2$s" phải được cài đặt và kích hoạt.', 'elementor-wc-product-creator' ),
+			esc_html__( '"%1$s" requires "%2$s" to be installed and activated.', 'elementor-wc-product-creator' ),
 			'<strong>' . esc_html__( 'Elementor WooCommerce Product Creator', 'elementor-wc-product-creator' ) . '</strong>',
 			'<strong>' . esc_html__( 'Elementor', 'elementor-wc-product-creator' ) . '</strong>'
 		);
@@ -439,7 +464,7 @@ final class Elementor_WC_Product_Creator {
 	 */
 	public function admin_notice_minimum_elementor_version() {
 		$message = sprintf(
-			esc_html__( '"%1$s" yêu cầu "%2$s" phiên bản %3$s trở lên.', 'elementor-wc-product-creator' ),
+			esc_html__( '"%1$s" requires "%2$s" version %3$s or higher.', 'elementor-wc-product-creator' ),
 			'<strong>' . esc_html__( 'Elementor WooCommerce Product Creator', 'elementor-wc-product-creator' ) . '</strong>',
 			'<strong>' . esc_html__( 'Elementor', 'elementor-wc-product-creator' ) . '</strong>',
 			self::MINIMUM_ELEMENTOR_VERSION
@@ -452,7 +477,7 @@ final class Elementor_WC_Product_Creator {
 	 */
 	public function admin_notice_minimum_php_version() {
 		$message = sprintf(
-			esc_html__( '"%1$s" yêu cầu "%2$s" phiên bản %3$s trở lên.', 'elementor-wc-product-creator' ),
+			esc_html__( '"%1$s" requires "%2$s" version %3$s or higher.', 'elementor-wc-product-creator' ),
 			'<strong>' . esc_html__( 'Elementor WooCommerce Product Creator', 'elementor-wc-product-creator' ) . '</strong>',
 			'<strong>' . esc_html__( 'PHP', 'elementor-wc-product-creator' ) . '</strong>',
 			self::MINIMUM_PHP_VERSION
@@ -465,7 +490,7 @@ final class Elementor_WC_Product_Creator {
 	 */
 	public function admin_notice_missing_woocommerce() {
 		$message = sprintf(
-			esc_html__( '"%1$s" yêu cầu "%2$s" phải được cài đặt và kích hoạt.', 'elementor-wc-product-creator' ),
+			esc_html__( '"%1$s" requires "%2$s" to be installed and activated.', 'elementor-wc-product-creator' ),
 			'<strong>' . esc_html__( 'Elementor WooCommerce Product Creator', 'elementor-wc-product-creator' ) . '</strong>',
 			'<strong>' . esc_html__( 'WooCommerce', 'elementor-wc-product-creator' ) . '</strong>'
 		);

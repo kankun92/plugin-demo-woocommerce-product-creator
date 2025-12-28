@@ -19,7 +19,7 @@ class Elementor_WC_Product_Creator_Widget extends \Elementor\Widget_Base {
 	 * Get widget title.
 	 */
 	public function get_title() {
-		return esc_html__( 'Tạo Sản Phẩm', 'elementor-wc-product-creator' );
+		return esc_html__( 'Product Creator', 'elementor-wc-product-creator' );
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Elementor_WC_Product_Creator_Widget extends \Elementor\Widget_Base {
 		$this->start_controls_section(
 			'content_section',
 			[
-				'label' => esc_html__( 'Nội dung', 'elementor-wc-product-creator' ),
+				'label' => esc_html__( 'Content', 'elementor-wc-product-creator' ),
 				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
 			]
 		);
@@ -74,9 +74,9 @@ class Elementor_WC_Product_Creator_Widget extends \Elementor\Widget_Base {
 		$this->add_control(
 			'create_button',
 			[
-				'label' => esc_html__( 'Tạo sản phẩm', 'elementor-wc-product-creator' ),
+				'label' => esc_html__( 'Create Product', 'elementor-wc-product-creator' ),
 				'type' => \Elementor\Controls_Manager::BUTTON,
-				'text' => esc_html__( 'Tạo Sản Phẩm Mới', 'elementor-wc-product-creator' ),
+				'text' => esc_html__( 'Create New Product', 'elementor-wc-product-creator' ),
 				'event' => 'ewcpc:create_product',
 				'separator' => 'after',
 			]
@@ -85,7 +85,7 @@ class Elementor_WC_Product_Creator_Widget extends \Elementor\Widget_Base {
 		$this->add_control(
 			'product_id',
 			[
-				'label' => esc_html__( 'Chọn sản phẩm', 'elementor-wc-product-creator' ),
+				'label' => esc_html__( 'Select Product', 'elementor-wc-product-creator' ),
 				'type' => \Elementor\Controls_Manager::SELECT2,
 				'options' => $this->get_products_list(),
 				'default' => '',
@@ -162,7 +162,7 @@ class Elementor_WC_Product_Creator_Widget extends \Elementor\Widget_Base {
 		}
 		?>
 		<div class="ewcpc-product-display">
-			<p>Vui lòng chọn sản phẩm để hiển thị.</p>
+			<p><?php echo esc_html__( 'Please select a product to display.', 'elementor-wc-product-creator' ); ?></p>
 		</div>
 		<?php
 	}
@@ -210,12 +210,12 @@ class Elementor_WC_Product_Creator_Widget extends \Elementor\Widget_Base {
 			</div>
 		<# } else if ( productId ) { #>
 			<div class="ewcpc-product-display">
-				<h3 class="ewcpc-product-name">Sản phẩm #{{{ productId }}}</h3>
-				<div class="ewcpc-product-price">Đang tải...</div>
+				<h3 class="ewcpc-product-name"><?php echo esc_html__( 'Product', 'elementor-wc-product-creator' ); ?> #{{{ productId }}}</h3>
+				<div class="ewcpc-product-price"><?php echo esc_html__( 'Loading...', 'elementor-wc-product-creator' ); ?></div>
 			</div>
 		<# } else { #>
 			<div class="ewcpc-product-display">
-				<p>Vui lòng chọn sản phẩm để hiển thị.</p>
+				<p><?php echo esc_html__( 'Please select a product to display.', 'elementor-wc-product-creator' ); ?></p>
 			</div>
 		<# } #>
 		<?php

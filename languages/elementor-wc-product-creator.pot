@@ -1,0 +1,110 @@
+# Copyright (C) 2024 Elementor WooCommerce Product Creator
+# This file is distributed under the same license as the Elementor WooCommerce Product Creator package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Elementor WooCommerce Product Creator 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/elementor-wc-product-creator\n"
+"POT-Creation-Date: 2024-01-01 12:00:00+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2024-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: elementor-woocommerce-product-creator.php:245
+msgid "You do not have permission to create products."
+msgstr ""
+
+#: elementor-woocommerce-product-creator.php:252
+msgid "Please enter product name."
+msgstr ""
+
+#: elementor-woocommerce-product-creator.php:256
+msgid "Please enter a valid product price."
+msgstr ""
+
+#: elementor-woocommerce-product-creator.php:262
+msgid "You need to be logged in to create products."
+msgstr ""
+
+#: elementor-woocommerce-product-creator.php:270
+msgid "WooCommerce REST API is not available."
+msgstr ""
+
+#: elementor-woocommerce-product-creator.php:291
+msgid "You do not have permission to create products."
+msgstr ""
+
+#: elementor-woocommerce-product-creator.php:303
+msgid "An error occurred while creating the product via REST API."
+msgstr ""
+
+#: elementor-woocommerce-product-creator.php:316
+msgid "Product created successfully!"
+msgstr ""
+
+#: elementor-woocommerce-product-creator.php:324
+msgid "An error occurred while creating the product."
+msgstr ""
+
+#: widgets/product-creator-widget.php:22
+msgid "Product Creator"
+msgstr ""
+
+#: widgets/product-creator-widget.php:69
+msgid "Content"
+msgstr ""
+
+#: widgets/product-creator-widget.php:77
+msgid "Create Product"
+msgstr ""
+
+#: widgets/product-creator-widget.php:79
+msgid "Create New Product"
+msgstr ""
+
+#: widgets/product-creator-widget.php:88
+msgid "Select Product"
+msgstr ""
+
+#: widgets/product-creator-widget.php:165
+msgid "Please select a product to display."
+msgstr ""
+
+#: widgets/product-creator-widget.php:213
+msgid "Product"
+msgstr ""
+
+#: widgets/product-creator-widget.php:214
+msgid "Loading..."
+msgstr ""
+
+#: widgets/product-creator-widget.php:218
+msgid "Please select a product to display."
+msgstr ""
+
+#: elementor-woocommerce-product-creator.php:430
+msgid "\"%1$s\" requires \"%2$s\" to be installed and activated."
+msgstr ""
+
+#: elementor-woocommerce-product-creator.php:431
+msgid "Elementor WooCommerce Product Creator"
+msgstr ""
+
+#: elementor-woocommerce-product-creator.php:432
+msgid "Elementor"
+msgstr ""
+
+#: elementor-woocommerce-product-creator.php:442
+msgid "\"%1$s\" requires \"%2$s\" version %3$s or higher."
+msgstr ""
+
+#: elementor-woocommerce-product-creator.php:455
+msgid "PHP"
+msgstr ""
+
+#: elementor-woocommerce-product-creator.php:468
+msgid "WooCommerce"
+msgstr ""
+
