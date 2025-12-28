@@ -39,6 +39,10 @@
             e.preventDefault();
             $('#ewcpc-popup').fadeIn(300);
             $('#ewcpc-product-name').focus();
+            
+            // Reset submit button state when opening popup
+            var $submitBtn = $('#ewcpc-product-form').find('.ewcpc-btn-submit');
+            $submitBtn.prop('disabled', false).text('Tạo Sản Phẩm');
         });
 
         // Close popup
@@ -46,6 +50,10 @@
             $('#ewcpc-popup').fadeOut(300);
             $('#ewcpc-product-form')[0].reset();
             $('#ewcpc-form-message').removeClass('ewcpc-success ewcpc-error').text('');
+            
+            // Reset submit button state
+            var $submitBtn = $('#ewcpc-product-form').find('.ewcpc-btn-submit');
+            $submitBtn.prop('disabled', false).text('Tạo Sản Phẩm');
         }
 
         $(document).on('click', '.ewcpc-popup-close, .ewcpc-btn-cancel', function() {

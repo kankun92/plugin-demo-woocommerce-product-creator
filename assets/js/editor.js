@@ -60,6 +60,13 @@
         $('#ewcpc-popup').fadeIn(300);
         $('#ewcpc-product-name').focus();
 
+        // Reset submit button state when opening popup
+        var $submitBtn = $('#ewcpc-product-form').find('.ewcpc-btn-submit');
+        var strings = typeof ewcpcStrings !== 'undefined' ? ewcpcStrings : {
+            save: 'Save'
+        };
+        $submitBtn.prop('disabled', false).text(strings.save);
+
         // Setup popup handlers
         setupPopupHandlers();
     }
@@ -71,6 +78,13 @@
             $('#ewcpc-popup').fadeOut(300);
             $('#ewcpc-product-form')[0].reset();
             $('#ewcpc-form-message').removeClass('ewcpc-success ewcpc-error').text('');
+            
+            // Reset submit button state
+            var $submitBtn = $('#ewcpc-product-form').find('.ewcpc-btn-submit');
+            var strings = typeof ewcpcStrings !== 'undefined' ? ewcpcStrings : {
+                save: 'Save'
+            };
+            $submitBtn.prop('disabled', false).text(strings.save);
         }
 
         $(document).off('click.ewcpc', '.ewcpc-popup-close, .ewcpc-btn-cancel').on('click.ewcpc', '.ewcpc-popup-close, .ewcpc-btn-cancel', closePopup);
